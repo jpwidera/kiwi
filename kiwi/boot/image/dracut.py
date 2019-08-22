@@ -42,7 +42,12 @@ class BootImageDracut(BootImageBase):
     """
     **Implements creation of dracut boot(initrd) images.**
     """
-    def post_init(self):
+
+    dracut_options: List[str]
+    included_files: List[str]
+    included_files_install: List[str]
+
+    def post_init(self) -> None:
         """
         Post initialization method
 
@@ -52,7 +57,8 @@ class BootImageDracut(BootImageBase):
         self.included_files = []
         self.included_files_install = []
 
-    def include_file(self, filename, install_media=False):
+    def include_file(self, filename: str,
+                     install_media: bool = False) -> None:
         """
         Include file to dracut boot image
 
@@ -64,7 +70,7 @@ class BootImageDracut(BootImageBase):
             self.included_files_install.append('--install')
             self.included_files_install.append(filename)
 
-    def prepare(self):
+    def prepare(self) -> None:
         """
         Prepare dracut caller environment
 
@@ -82,7 +88,8 @@ class BootImageDracut(BootImageBase):
         self.dracut_options.append('--install')
         self.dracut_options.append('/.profile')
 
-    def create_initrd(self, mbrid=None, basename=None, install_initrd=False):
+    def create_initrd(self, mbrid: None = None, basename: str = None,
+                      install_initrd: bool = False) -> None:
         """
         Call dracut as chroot operation to create the initrd and move
         the result into the image build target directory
@@ -131,7 +138,7 @@ class BootImageDracut(BootImageBase):
                 [self.target_dir, dracut_initrd_basename]
             )
 
-    def get_boot_names(self):
+    def get_boot_names(self) -> BootNames:
         """
         Provides kernel and initrd names for kiwi boot image
 
@@ -164,7 +171,7 @@ class BootImageDracut(BootImageBase):
             )
         )
 
-    def _get_dracut_output_file_format(self):
+    def _get_dracut_output_file_format(self) -> str:
         """
         Unfortunately the dracut initrd output file format varies between
         the different Linux distributions. Tools like lsinitrd, and also
